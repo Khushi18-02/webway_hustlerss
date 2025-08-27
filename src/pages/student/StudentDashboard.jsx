@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { 
-  Moon, 
-  Sun, 
   Bell, 
   Home, 
   Calendar, 
@@ -36,12 +34,37 @@ import {
 } from "lucide-react";
 
 const StudentDashboard = () => {
-  const [darkMode, setDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [notifications, setNotifications] = useState(5);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [chatOpen, setChatOpen] = useState(false);
   const [streakCount, setStreakCount] = useState(7);
+  const [notificationsList, setNotificationsList] = useState([
+    {
+      id: 1,
+      type: "event",
+      title: "New Event: IEEE CCOEW Placement Series",
+      message: "Registration opens tomorrow",
+      time: "2 hours ago",
+      read: false
+    },
+    {
+      id: 2,
+      type: "certificate",
+      title: "Certificate Ready",
+      message: "Your Arduino Workshop certificate is ready for download",
+      time: "1 day ago", 
+      read: false
+    },
+    {
+      id: 3,
+      type: "reminder",
+      title: "Registration Deadline",
+      message: "Selfie With Eco-friendly Ganpati registration closes in 3 days",
+      time: "2 days ago",
+      read: true
+    }
+  ]);
 
   const glassmorphismClass = `
     backdrop-blur-lg bg-white/10 dark:bg-gray-800/10 
@@ -49,76 +72,155 @@ const StudentDashboard = () => {
     shadow-xl rounded-2xl
   `;
 
+  const markAllRead = () => {
+    setNotificationsList(notificationsList.map(notif => ({ ...notif, read: true })));
+    setNotifications(0);
+  };
+
   // Sample Data
   const categories = ["all", "technical", "sports", "cultural", "social", "volunteer"];
   
   const events = [
     {
       id: 1,
-      title: "React Hackathon 2025",
+      title: "Webway 2025",
       category: "technical",
-      date: "2025-08-30",
+      date: "2025-09-15",
       time: "09:00 AM",
-      location: "Tech Lab",
       status: "ongoing",
-      registrationDeadline: "2025-08-28",
+      registrationDeadline: "2025-08-22",
       description: "Build innovative web applications",
       participants: 45,
       maxParticipants: 50,
       points: 25,
-      poster: "🚀"
+      
     },
     {
       id: 2,
-      title: "Cricket Tournament",
+      title: "Sphurti-Cricket",
       category: "sports",
       date: "2025-09-05",
-      time: "06:00 AM",
-      location: "Sports Ground",
+      time: "10:00 AM",
+      location: "Cricket Ground",
       status: "upcoming",
       registrationDeadline: "2025-09-01",
-      description: "Inter-department cricket championship",
-      participants: 120,
+      description: "Intra college sports event",
+      participants: 40,
       maxParticipants: 150,
       points: 20,
-      poster: "🏏"
+      
     },
     {
       id: 3,
-      title: "Cultural Fest - Dance",
-      category: "cultural",
-      date: "2025-09-10",
-      time: "05:00 PM",
-      location: "Auditorium",
+      title: "Sphurti-VolleyBall",
+      category: "sports",
+      date: "2025-09-05",
+      time: "10:00 AM",
+      location: "VolleyBall Ground",
       status: "upcoming",
-      registrationDeadline: "2025-09-07",
-      description: "Showcase your dance talents",
-      participants: 80,
-      maxParticipants: 100,
-      points: 15,
-      poster: "💃"
+      registrationDeadline: "2025-09-01",
+      description: "Intra college sports event",
+      participants: 20,
+      maxParticipants: 90,
+      points: 20,
+      
     },
     {
       id: 4,
+      title: "Umang",
+      category: "cultural",
+      date: "2025-09-10",
+      time: "05:00 PM",
+      location: "Cricket Ground",
+      status: "upcoming",
+      registrationDeadline: "2025-09-07",
+      description: "Showcase your dance talents",
+      participants: 30,
+      maxParticipants: 100,
+      points: 15,
+     
+    },
+    {
+      id: 5,
+      title: "Ananya",
+      category: "cultural",
+      date: "2025-09-10",
+      time: "05:00 PM",
+      location: "BasketBall Ground",
+      status: "upcoming",
+      registrationDeadline: "2025-09-07",
+      description: "Showcase your  talents",
+      participants: 20,
+      maxParticipants: 100,
+      points: 15,
+     
+    },
+    {
+      id: 6,
       title: "Blood Donation Drive",
       category: "social",
       date: "2025-08-26",
       time: "10:00 AM",
-      location: "Medical Center",
+      location: "Drawing Hall",
       status: "completed",
-      registrationDeadline: "2025-08-25",
+      registrationDeadline: "2025-09-05",
       description: "Help save lives through blood donation",
-      participants: 200,
+      participants: 30,
       maxParticipants: 200,
       points: 30,
-      poster: "🩸"
-    }
+     
+    },
+    {
+      id: 7,
+      title: "Tree Plantation Drive",
+      category: "volunteer",
+      date: "2025-08-26",
+      time: "10:00 AM",
+      location: "Near Canteen",
+      status: "upcoming",
+      registrationDeadline: "2025-09-5",
+      description: "Help sow seeds for greener tomorrow",
+      participants: 30,
+      maxParticipants: 100,
+      points: 30,
+     
+    },
+    {
+      id: 8,
+      title: "Avishkar 4.0",
+      category: "technical",
+      date: "2025-08-26",
+      time: "10:00 AM",
+      location: "Near Canteen",
+      status: "upcoming",
+      registrationDeadline: "2025-09-11",
+      description: "Inter-college Hackathon",
+      participants: 60,
+      maxParticipants: 100,
+      points: 30,
+     
+    },
+    {
+      id: 9,
+      title:"E-Waste Collection Drive",
+      category: "social",
+      date: "2025-08-26",
+      time: "10:00 AM",
+      location: "Near Admin",
+      status: "upcoming",
+      registrationDeadline: "2025-09-2",
+      description: "Don-t Trash it,Reboot it",
+      participants: 30,
+      maxParticipants: 200,
+      points: 30,
+     
+    },
   ];
 
   const myEvents = [
     {
       id: 1,
-      title: "AI Workshop",
+      title: "Arduino Workshop",
       category: "technical",
       status: "completed",
       result: "winner",
@@ -128,7 +230,7 @@ const StudentDashboard = () => {
     },
     {
       id: 2,
-      title: "Football Match",
+      title: "Chess",
       category: "sports", 
       status: "ongoing",
       result: null,
@@ -151,70 +253,43 @@ const StudentDashboard = () => {
   const certificates = [
     {
       id: 1,
-      title: "AI Workshop Winner",
+      title: "Arduino Workshop Winner",
       type: "winner",
       issueDate: "2025-07-16",
-      event: "AI Workshop",
-      credentialId: "AI-WIN-2025-001",
+      event: "Arduino Workshop",
+      credentialId: "Arduino-WIN-2025-001",
       category: "technical"
     },
     {
       id: 2,
-      title: "Hackathon Participation",
+      title: "WebWay Participation",
       type: "participation",
       issueDate: "2025-06-20",
-      event: "Spring Hackathon",
-      credentialId: "HACK-PAR-2025-042",
+      event: "Full Stack Web development Hackathon",
+      credentialId: "Web-PAR-2025-042",
       category: "technical"
     },
     {
       id: 3,
-      title: "Volunteer Certificate", 
+      title: "Blood Donation Certificate", 
       type: "volunteer",
       issueDate: "2025-05-10",
       event: "Community Service",
-      credentialId: "VOL-2025-125",
+      credentialId: "BloodDonation-2025-125",
       category: "social"
     }
   ];
 
   const leaderboard = [
-    { rank: 1, name: "Arjun Sharma", points: 2850, streak: 12, badge: "🏆" },
-    { rank: 2, name: "Priya Patel", points: 2720, streak: 8, badge: "🥈" },
-    { rank: 3, name: "Rahul Kumar", points: 2650, streak: 15, badge: "🥉" },
-    { rank: 4, name: "You (Alex)", points: 2420, streak: 7, badge: "⭐", isCurrentUser: true },
-    { rank: 5, name: "Sneha Gupta", points: 2380, streak: 6, badge: "" },
-  ];
-
-  const notificationsList = [
-    {
-      id: 1,
-      type: "event",
-      title: "New Event: React Hackathon",
-      message: "Registration opens tomorrow",
-      time: "2 hours ago",
-      read: false
-    },
-    {
-      id: 2,
-      type: "certificate",
-      title: "Certificate Ready",
-      message: "Your AI Workshop certificate is ready for download",
-      time: "1 day ago", 
-      read: false
-    },
-    {
-      id: 3,
-      type: "reminder",
-      title: "Registration Deadline",
-      message: "Cricket tournament registration closes in 3 days",
-      time: "2 days ago",
-      read: true
-    }
+    { rank: 1, name: "Shravani", points: 2850, streak: 12, badge: "🏆" },
+    { rank: 2, name: "Priya ", points: 2720, streak: 8, badge: "🥈" },
+    { rank: 3, name: "Aditi ", points: 2650, streak: 15, badge: "🥉" },
+    { rank: 4, name: "You ", points: 2420, streak: 7, badge: "⭐", isCurrentUser: true },
+    { rank: 5, name: "Diksha", points: 2380, streak: 6, badge: "" },
   ];
 
   const achievements = [
-    { date: "2025-07-16", title: "Won AI Workshop", type: "winner", points: 25 },
+    { date: "2025-07-16", title: "Won Arduino Workshop", type: "winner", points: 25 },
     { date: "2025-06-20", title: "Completed Hackathon", type: "participation", points: 15 },
     { date: "2025-05-10", title: "Volunteered 20 hours", type: "volunteer", points: 30 },
   ];
@@ -391,7 +466,7 @@ const StudentDashboard = () => {
                   achievement.type === 'volunteer' ? 'bg-green-500/20 text-green-400' :
                   'bg-blue-500/20 text-blue-400'
                 }`}>
-                  {achievement.type === 'winner' ? '🏆' : achievement.type === 'volunteer' ? '❤️' : '🎯'}
+                 {achievement.type === 'winner' ? '🏆' : achievement.type === 'volunteer' ? '❤️' : '🎯'}
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium">{achievement.title}</p>
@@ -663,7 +738,7 @@ const StudentDashboard = () => {
           <h3 className="font-semibold mb-4">Technical Events</h3>
           <div className="space-y-2">
             <div className="flex justify-between items-center p-2 rounded bg-white/5">
-              <span className="text-sm">1. Arjun Sharma</span>
+              <span className="text-sm">1. Neha</span>
               <span className="text-sm text-blue-400">850 pts</span>
             </div>
             <div className="flex justify-between items-center p-2 rounded bg-white/5">
@@ -677,11 +752,11 @@ const StudentDashboard = () => {
           <h3 className="font-semibold mb-4">Sports Events</h3>
           <div className="space-y-2">
             <div className="flex justify-between items-center p-2 rounded bg-white/5">
-              <span className="text-sm">1. Priya Patel</span>
+              <span className="text-sm">1. Khushi</span>
               <span className="text-sm text-green-400">920 pts</span>
             </div>
             <div className="flex justify-between items-center p-2 rounded bg-white/5">
-              <span className="text-sm">2. Rahul Kumar</span>
+              <span className="text-sm">2. Shreya</span>
               <span className="text-sm text-green-400">680 pts</span>
             </div>
           </div>
@@ -700,7 +775,7 @@ const StudentDashboard = () => {
           <div>
             <h2 className="text-2xl font-bold">Student</h2>
             <p className="text-blue-400">Computer Science • 3rd Year</p>
-            <p className="text-sm opacity-70">Student ID: CS21043</p>
+            <p className="text-sm opacity-70">Student ID: 5CEA02</p>
           </div>
         </div>
 
@@ -798,7 +873,10 @@ const StudentDashboard = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Notifications</h2>
-        <button className="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30">
+        <button 
+          onClick={markAllRead}
+          className="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30"
+        >
           Mark All Read
         </button>
       </div>
@@ -964,8 +1042,8 @@ const StudentDashboard = () => {
   ];
 
   return (
-    <div className={darkMode ? "dark" : ""}>
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-white">
+    <div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 text-white">
         <div className="flex h-screen">
           {/* Glassmorphism Sidebar */}
           <aside className={`w-64 ${glassmorphismClass} m-4 mr-0 rounded-r-none border-r-0`}>
@@ -1008,34 +1086,9 @@ const StudentDashboard = () => {
               <div className="flex justify-between items-center">
                 <div>
                   <h1 className="text-xl font-semibold flex items-center gap-2">
-                    Welcome back, student!👋
+                    Welcome back, student! 👋
                   </h1>
                   <p className="text-sm opacity-70">Ready to learn something new today?</p>
-                </div>
-                
-                <div className="flex items-center gap-3">
-                  <button 
-                    className="relative p-3 hover:bg-white/10 rounded-full transition-colors"
-                    onClick={() => setNotifications(0)}
-                  >
-                    <Bell className="w-5 h-5" />
-                    {notifications > 0 && (
-                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                        {notifications}
-                      </span>
-                    )}
-                  </button>
-                  
-                  <button
-                    onClick={() => setDarkMode(!darkMode)}
-                    className="p-3 hover:bg-white/10 rounded-full transition-colors"
-                  >
-                    {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                  </button>
-                  
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                    <User className="w-4 h-4 text-white" />
-                  </div>
                 </div>
               </div>
             </header>
