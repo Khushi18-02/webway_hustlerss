@@ -4,147 +4,73 @@ import { Eye, EyeOff, Moon, Sun, User, Lock, Mail } from "lucide-react";
 
 export default function Login() {
   const navigate = useNavigate();
-
-  // Form state
-  const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const [credentials, setCredentials] = useState({
+    username: "",
+    password: ""
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-
-  // UI state
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [darkMode, setDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [fadeIn, setFadeIn] = useState(false);
 
-  // Fade in animation on mount
+  // Page load animation
   useEffect(() => {
     const timer = setTimeout(() => setFadeIn(true), 100);
     return () => clearTimeout(timer);
   }, []);
 
-  // If already logged in, redirect based on role
- /* useEffect(() => {
-    const token = localStorage.getItem("token");
-    const user = localStorage.getItem("user");
-
-    if (token && user) {
-      try {
-        const userData = JSON.parse(user);
-
-        if (userData.role === "student") {
-          navigate("/student", { replace: true });
-        } else if (userData.role === "admin") {
-          navigate("/admin", { replace: true });
-        }
-      } catch {
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-      }
-    }
-  }, [navigate]);*/
-
-  // Update form inputs
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setCredentials((prev) => ({ ...prev, [name]: value }));
-    if (error) setError("");
-    if (success) setSuccess("");
+    setCredentials(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    if (error) setError(""); // Clear error when user starts typing
   };
 
-  // Handle form submission
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    console.log("Login function triggered");  // <---- Added console log here
+  const handleLogin = async () => {
     setIsLoading(true);
     setError("");
-    setSuccess("");
 
-    try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: credentials.email,
-          password: credentials.password,
-        }),
-      });
+    // Simulate loading delay
+    await new Promise(resolve => setTimeout(resolve, 800));
 
-      const data = await response.json();
+    const { username, password } = credentials;
 
-      if (response.ok && data.token) {
-        setSuccess("Login successful! Redirecting...");
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        if (rememberMe) {
-          localStorage.setItem("rememberMe", "true");
-        }
-
-        // Redirect after 1 second
-        setTimeout(() => {
-          if (data.user.role === "student") {
-            navigate("/student", { replace: true });
-          } else if (data.user.role === "admin") {
-            navigate("/admin", { replace: true });
-          } else {
-            setError("Unknown user role.");
-          }
-        }, 1000);
-      } else {
-        setError(data.message || "Login failed.");
-      }
-    } catch {
-      setError(
-        "Unable to connect to server. Please check your connection and ensure backend is running."
-      );
-    } finally {
-      setIsLoading(false);
+    if (username === "aarushi.singh@cumminscollege.edu.in" && password === "student1234") {
+      navigate("/student");
+    } else if (username === "admin.gupta@cumminscollege.edu.in" && password === "admin111") {
+      navigate("/admin");
+    } else {
+      setError("Invalid credentials. Please try again.");
     }
+    
+    setIsLoading(false);
   };
 
-  // Handle Enter key press to submit form
   const handleKeyPress = (e) => {
-    if (
-      e.key === "Enter" &&
-      credentials.email.trim() !== "" &&
-      credentials.password.trim() !== ""
-    ) {
-      handleLogin(e);
+    if (e.key === "Enter") {
+      handleLogin();
     }
   };
 
   return (
-    <div
-      className={`min-h-screen transition-opacity duration-500 ${
-        fadeIn ? "opacity-100" : "opacity-0"
-      } ${darkMode ? "dark" : ""}`}
-    >
-      {/* Background */}
-      <div
-        className={`fixed inset-0 ${
-          darkMode
-            ? "bg-gradient-to-br from-gray-900 via-blue-900 to-indigo-900"
-            : "bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50"
-        }`}
-      />
-
-      {/* Floating shapes */}
+    <div className={`min-h-screen transition-all duration-500 ${fadeIn ? 'opacity-100' : 'opacity-0'} ${darkMode ? 'dark' : ''}`}>
+      {/* Background with gradient */}
+      <div className={`fixed inset-0 ${darkMode 
+        ? 'bg-gradient-to-br from-gray-900 via-blue-900 to-indigo-900' 
+        : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'}`} />
+      
+      {/* Floating shapes for visual appeal */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div
-          className={`absolute top-1/4 left-1/4 w-72 h-72 ${
-            darkMode ? "bg-blue-700" : "bg-blue-200"
-          } rounded-full filter blur-3xl opacity-30 animate-pulse`}
-        />
-        <div
-          className={`absolute top-3/4 right-1/4 w-72 h-72 ${
-            darkMode ? "bg-purple-700" : "bg-purple-200"
-          } rounded-full filter blur-3xl opacity-30 animate-pulse`}
-          style={{ animationDelay: "2s" }}
-        />
+        <div className={`absolute top-1/4 left-1/4 w-72 h-72 ${darkMode ? 'bg-blue-700' : 'bg-blue-200'} rounded-full filter blur-3xl opacity-30 animate-pulse`} />
+        <div className={`absolute top-3/4 right-1/4 w-72 h-72 ${darkMode ? 'bg-purple-700' : 'bg-purple-200'} rounded-full filter blur-3xl opacity-30 animate-pulse`} style={{animationDelay: '2s'}} />
       </div>
 
       <div className="relative z-10 min-h-screen flex">
-        {/* Left side illustration */}
+        {/* Left Side - Illustration (Desktop Only) */}
         <div className="hidden lg:flex lg:flex-1 items-center justify-center p-12">
           <div className="max-w-lg text-center">
             <div className="w-96 h-96 mx-auto mb-8 bg-gradient-to-br from-blue-400 to-purple-600 rounded-3xl flex items-center justify-center shadow-2xl">
@@ -156,220 +82,129 @@ export default function Login() {
                 <p className="text-blue-100">Your gateway to digital learning</p>
               </div>
             </div>
-            <h2
-              className={`text-3xl font-bold ${
-                darkMode ? "text-white" : "text-gray-800"
-              } mb-4`}
-            >
+            <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>
               Transform Your Learning Journey
             </h2>
-            <p
-              className={`${
-                darkMode ? "text-gray-300" : "text-gray-600"
-              } text-lg`}
-            >
-              Access courses, track progress, and connect with peers in our
-              comprehensive educational platform.
+            <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} text-lg`}>
+              Access courses, track progress, and connect with peers in our comprehensive educational platform.
             </p>
           </div>
         </div>
 
-        {/* Right side login form */}
+        {/* Right Side - Login Form */}
         <div className="flex-1 lg:max-w-md xl:max-w-lg flex items-center justify-center p-6">
           <div className="w-full max-w-md">
-            {/* Dark mode toggle */}
+            {/* Dark Mode Toggle */}
             <div className="flex justify-end mb-6">
               <button
                 onClick={() => setDarkMode(!darkMode)}
-                className={`p-2 rounded-full ${
-                  darkMode
-                    ? "bg-gray-800 bg-opacity-20 border-gray-700"
-                    : "bg-white bg-opacity-20 border-white"
-                } border border-opacity-30 hover:bg-opacity-30 transition-all duration-300`}
-                aria-label="Toggle dark mode"
+                className={`p-2 rounded-full ${darkMode ? 'bg-gray-800 bg-opacity-20 border-gray-700' : 'bg-white bg-opacity-20 border-white'} border border-opacity-30 hover:bg-opacity-30 transition-all duration-300`}
               >
-                {darkMode ? (
-                  <Sun className="w-5 h-5 text-yellow-400" />
-                ) : (
-                  <Moon className="w-5 h-5 text-gray-600" />
-                )}
+                {darkMode ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-gray-600" />}
               </button>
             </div>
 
             {/* Login Card */}
-            <div
-              className={`${
-                darkMode
-                  ? "bg-gray-800 bg-opacity-70 border-gray-700"
-                  : "bg-white bg-opacity-70 border-white"
-              } border border-opacity-20 rounded-3xl shadow-2xl p-8 transform transition-all duration-300 hover:shadow-3xl`}
-            >
+            <div className={`${darkMode ? 'bg-gray-800 bg-opacity-70 border-gray-700' : 'bg-white bg-opacity-70 border-white'} border border-opacity-20 rounded-3xl shadow-2xl p-8 transform transition-all duration-300 hover:shadow-3xl`}>
               {/* Logo and Title */}
               <div className="text-center mb-8">
                 <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
                   <span className="text-2xl font-bold text-white">ET</span>
                 </div>
-                <h1
-                  className={`text-3xl font-bold ${
-                    darkMode ? "text-white" : "text-gray-800"
-                  } mb-2`}
-                >
-                  EduTech
-                </h1>
-                <p
-                  className={`text-sm ${
-                    darkMode ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
-                  MKSSS Cummins College of Engineering for Women, Nagpur
-                </p>
+                <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} mb-2`}>EduTech</h1>
+                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>MKSSS Cummins College of Engineering for Women, Nagpur</p>
               </div>
-
-              {/* Success Message */}
-              {success && (
-                <div
-                  className={`mb-6 p-4 ${
-                    darkMode
-                      ? "bg-green-900 bg-opacity-20 border-green-800"
-                      : "bg-green-50 border-green-200"
-                  } border rounded-xl`}
-                >
-                  <p
-                    className={`${
-                      darkMode ? "text-green-400" : "text-green-600"
-                    } text-sm text-center`}
-                  >
-                    {success}
-                  </p>
-                </div>
-              )}
 
               {/* Error Message */}
               {error && (
-                <div
-                  className={`mb-6 p-4 ${
-                    darkMode
-                      ? "bg-red-900 bg-opacity-20 border-red-800"
-                      : "bg-red-50 border-red-200"
-                  } border rounded-xl`}
-                >
-                  <p
-                    className={`${
-                      darkMode ? "text-red-400" : "text-red-600"
-                    } text-sm text-center`}
-                  >
-                    {error}
-                  </p>
+                <div className={`mb-6 p-4 ${darkMode ? 'bg-red-900 bg-opacity-20 border-red-800' : 'bg-red-50 border-red-200'} border rounded-xl`}>
+                  <p className={`${darkMode ? 'text-red-400' : 'text-red-600'} text-sm text-center`}>{error}</p>
                 </div>
               )}
 
+              
+
               {/* Login Form */}
-              <form onSubmit={handleLogin} className="space-y-6">
-                {/* Email Input */}
+              <div className="space-y-6">
+                {/* Username Input */}
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    Email Address
+                  <label htmlFor="username" className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
+                    Username / Email
                   </label>
-                  <div className="mt-1 relative rounded-md shadow-sm">
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                     <input
+                      id="username"
+                      name="username"
                       type="email"
-                      name="email"
-                      id="email"
-                      required
-                      value={credentials.email}
+                      value={credentials.username}
                       onChange={handleInputChange}
-                      onKeyDown={handleKeyPress}
-                      className={`block w-full pr-10 sm:text-sm rounded-md border ${
-                        darkMode
-                          ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
-                          : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
-                      } focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                      placeholder="you@example.com"
-                      autoComplete="email"
+                      onKeyPress={handleKeyPress}
+                      className={`w-full pl-12 pr-4 py-3 ${darkMode ? 'bg-gray-700 bg-opacity-50 border-gray-600 text-white placeholder-gray-400' : 'bg-white bg-opacity-50 border-gray-200 text-gray-800 placeholder-gray-500'} border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300`}
+                      placeholder="Enter your email"
                     />
-                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                      <Mail
-                        className={`w-5 h-5 ${
-                          darkMode ? "text-gray-400" : "text-gray-400"
-                        }`}
-                      />
-                    </div>
                   </div>
                 </div>
 
                 {/* Password Input */}
                 <div>
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
+                  <label htmlFor="password" className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2`}>
                     Password
                   </label>
-                  <div className="mt-1 relative rounded-md shadow-sm">
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                     <input
-                      type={showPassword ? "text" : "password"}
-                      name="password"
                       id="password"
-                      required
+                      name="password"
+                      type={showPassword ? "text" : "password"}
                       value={credentials.password}
                       onChange={handleInputChange}
-                      onKeyDown={handleKeyPress}
-                      className={`block w-full pr-10 sm:text-sm rounded-md border ${
-                        darkMode
-                          ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
-                          : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"
-                      } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                      onKeyPress={handleKeyPress}
+                      className={`w-full pl-12 pr-12 py-3 ${darkMode ? 'bg-gray-700 bg-opacity-50 border-gray-600 text-white placeholder-gray-400' : 'bg-white bg-opacity-50 border-gray-200 text-gray-800 placeholder-gray-500'} border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300`}
                       placeholder="Enter your password"
-                      autoComplete="current-password"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      tabIndex={-1}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
-                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      className={`absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 ${darkMode ? 'hover:text-gray-300' : 'hover:text-gray-600'} transition-colors`}
                     >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
                   </div>
                 </div>
 
-                {/* Remember Me Checkbox */}
-                <div className="flex items-center">
-                  <input
-                    id="rememberMe"
-                    name="rememberMe"
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={() => setRememberMe(!rememberMe)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <label
-                    htmlFor="rememberMe"
-                    className="ml-2 block text-sm text-gray-900 dark:text-gray-300"
-                  >
-                    Remember me
+                {/* Remember Me & Forgot Password */}
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                    />
+                    <span className={`ml-2 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Remember me</span>
                   </label>
-                </div>
-
-                {/* Submit Button */}
-                <div>
-                  <button
-                    type="submit"
-                    disabled={isLoading}
-                    className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-                      isLoading
-                        ? "bg-blue-300 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700"
-                    } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-150`}
-                  >
-                    {isLoading ? "Logging in..." : "Login"}
+                  <button className={`text-sm ${darkMode ? 'text-blue-400' : 'text-blue-600'} hover:underline transition-colors`}>
+                    Forgot password?
                   </button>
                 </div>
-              </form>
+
+                {/* Login Button */}
+                <button
+                  onClick={handleLogin}
+                  disabled={isLoading || !credentials.username || !credentials.password}
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 text-white py-3 rounded-xl font-semibold transform transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center justify-center">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                      Logging in...
+                    </div>
+                  ) : (
+                    "Login"
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
